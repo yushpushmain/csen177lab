@@ -1,0 +1,40 @@
+/*
+ * Name: Ayush Gupta
+ * Date: 12th Jan 2026
+ * Title: Lab2 - Step 1 - 
+ * Description: C program to demonstrate the use of fork()
+ */
+#include <errno.h>     /* errno */
+#include <stdio.h>     /* printf, stderr */
+#include <stdlib.h>    /* atoi */
+#include <sys/types.h> /* pid_t */
+#include <unistd.h>    /* fork */
+#include <sys/wait.h>  /* wait */
+
+/* main function */
+int main() {
+    pid_t pid;  // process id
+    int i, n = 3000;  // n is a delay in microseconds inserted in parent and child iterations
+    printf("\n Before forking.\n");
+    pid = fork();
+    if (pid < 0) {
+        fprintf(stderr, "can't fork, error %d\n", errno);
+        exit(0);
+    }
+    if (pid) {
+        // Parent process: pid is > 0
+        for (i = 0; i < 10; i++) {
+            printf("\t \t \t I am the parent Process displaying iteration %d \n", i);
+            usleep(n);
+        }
+        wait(NULL);
+    } 
+    else {
+        // Child process: pid = 0
+        for (i = 0; i < 10; i++) {
+            printf("I am the child process displaying iteration %d\n", i);
+            usleep(n);
+        }
+    }
+    return 0;
+}
