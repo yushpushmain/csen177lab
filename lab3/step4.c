@@ -1,0 +1,30 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/wait.h>
+#include <unistd.h>
+// main
+int main(int argc, char* argv[]) {
+    int fds[2];
+    char buff[60];
+    int count;
+    int i;
+    pipe(fds);
+    if (fork() == 0) {
+        close(fds[0]);
+        dup2(fds[1], 1);
+        execlp("cat", "cat", "/etc/passwd", 0);
+        exit(0);
+    } else if (fork() == 0) {
+        close(fds[1]);
+        dup2(fds[0], 0);
+        execlp("grep", "grep", "root", 0);
+        exit(0);
+    } else {
+        close(fds[0]);
+        close(fds[1]);
+        wait(0);
+        wait(0);
+    }
+    return 0;
+}
